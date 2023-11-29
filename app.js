@@ -1,41 +1,11 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const port = 3000
 
 const mockCoworkings = require('./mock-coworking')
 
-const arrNames = [
-    {
-
-        id: 12,
-        name: 'William',
-        age: '22'
-
-    }, {
-
-        id: 15,
-        name: 'Paul',
-        age: '35'
-
-    }, {
-
-        id: 6,
-        name: 'Mathieu',
-        age: '19'
-
-    }
-]
-
-const logger = (req, res, next) => {
-    const now = new Date()
-    const hours = now.getHours()
-    const minutes = now.getMinutes()
-    console.log(`${hours < 10 ? '0' + hours : hours}h${minutes < 10 ? '0' + minutes : minutes}m - ${req.url} dans logger`)
-
-    next()
-}
-
-app.use(logger)
+app.use(morgan('dev'))
 
 app.get('/', (req, res) => {
     res.send(`<h1>Page d'accueil</h1><br>
