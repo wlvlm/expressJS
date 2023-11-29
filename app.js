@@ -30,7 +30,7 @@ const logger = (req, res, next) => {
     const now = new Date()
     const hours = now.getHours()
     const minutes = now.getMinutes()
-    console.log(`${hours}h${minutes}m - ${req.url} dans logger`)
+    console.log(`${hours < 10 ? '0' + hours : hours}h${minutes < 10 ? '0' + minutes : minutes}m - ${req.url} dans logger`)
 
     next()
 }
