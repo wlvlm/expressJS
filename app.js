@@ -54,13 +54,13 @@ app.get('/names/:id', (req, res) => {
     //     }
     // })
 
-    let result = arrNames.find(el => el.id === urlId)
+    let result = arrNames.find(el => el.id === urlId).name
 
     if(!result){
         result = "Not found"
     }
 
-    res.send(result.name)
+    res.send(result)
 })
 
 app.listen(port, ()=>{
