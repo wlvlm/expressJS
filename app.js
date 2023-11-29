@@ -26,6 +26,17 @@ const arrNames = [
     }
 ]
 
+const logger = (req, res, next) => {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+    console.log(`${hours}h${minutes}m - ${req.url} dans logger`)
+
+    next()
+}
+
+app.use(logger)
+
 app.get('/', (req, res) => {
     res.send(`<h1>Page d'accueil</h1><br>
     <a href="/about">A propos</a>`)
