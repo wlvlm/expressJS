@@ -45,16 +45,22 @@ app.get('/names', (req, res) => {
 
 app.get('/names/:id', (req, res) => {
     // console.log(arrNames[req.params.id].name)
-    let result = "not found";
+    // let result = "not found";
     const urlId = parseInt(req.params.id)
 
-    arrNames.forEach((obj, index) => {
-        if(obj.id === urlId){
-            result = arrNames[index].name
-        }
-    })
+    // arrNames.forEach((obj, index) => {
+    //     if(obj.id === urlId){
+    //         result = arrNames[index].name
+    //     }
+    // })
 
-    res.send(result)
+    let result = arrNames.find(el => el.id === urlId)
+
+    if(!result){
+        result = "Not found"
+    }
+
+    res.send(result.name)
 })
 
 app.listen(port, ()=>{
