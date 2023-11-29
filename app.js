@@ -3,43 +3,29 @@ const morgan = require('morgan')
 const app = express()
 const port = 3000
 
-const mockCoworkings = require('./mock-coworking')
+let mockCoworkings = require('./mock-coworking')
 
+app.use(express.json())
 app.use(morgan('dev'))
 
 app.get('/', (req, res) => {
-    res.send(`<h1>Page d'accueil</h1><br>
+    res.json(`<h1>Page d'accueil</h1><br>
     <a href="/about">A propos</a>`)
 })
 
-app.get('/about', (req, res) => {
-    res.send(`<h1>A propos</h1><br>
-    <a href="/">Accueil</a>`)
-})
+app.post('/api/coworkings', (req, res) => {
+    
+    const newId = mockCoworkings[mockCoworkings.length - 1].id + 1
+    let coworking = { id: newId, ...req.body}
 
-app.get('/names', (req, res) => {
-    let sentence = ''
-    arrNames.forEach((name) => {
-        sentence += name + " "
-    })
+    mockCoworkings.push(coworking)
 
-    res.send(sentence)
-})
-
-app.get('/names/:id', (req, res) => {
-    const urlId = parseInt(req.params.id)
-    let result = arrNames.find(el => el.id === urlId).name
-
-    result = result ? result.name : "Not found"
-
-    res.send(result)
+    const result = {message: 'Le coworking a bien été ajouté', data: coworking}
+    res.json(result)
 })
 
 app.get('/api/coworkings', (req, res) => {
-    let result = `Il y a ${mockCoworkings.length} coworkings dans la liste.`
-
-    
-    res.send(result)
+    res.json(mockCoworkings)
 })
 
 app.get('/api/coworkings/:id', (req, res) => {
@@ -48,7 +34,35 @@ app.get('/api/coworkings/:id', (req, res) => {
 
     result = result ? result : `Aucun élément ne correspond à l'id n°${urlId}`
 
-    res.send(result)
+    res.json(result)
+})
+
+app.put('/api/coworkings/:id', (req, res) => {
+    const coworking = mockCoworkings.find((el) => el.id === parseInt(req.params.id))    
+
+    let result
+    if (coworking){
+        coworking.superficy = req.body.superficy
+        result = {message: 'Coworking modifié avec succès', data : {coworking}}
+    } else {
+        result = {message: `Le coworking n'existe pas`, data : {}}
+    }
+    
+    res.json(result)
+})
+
+app.delete('/api/coworkings/:id', (req, res) => {
+    const coworking = mockCoworkings.find((el) => el.id === parseInt(req.params.id))   
+
+    let result
+    if (coworking){
+        mockCoworkings = mockCoworkings.filter(el => el.id !== coworking.id)
+        result = {message: 'Coworking supprimé avec succès', data: coworking }
+    } else {
+        result = {message: `Le coworking n'existe pas`}
+    }
+
+    res.json(result)
 })
 
 app.listen(port, ()=>{
