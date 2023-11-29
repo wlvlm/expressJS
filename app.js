@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const mockCoworkings = require('./mock-coworking')
+
 const arrNames = [
     {
 
@@ -44,23 +46,26 @@ app.get('/names', (req, res) => {
 })
 
 app.get('/names/:id', (req, res) => {
-    // console.log(arrNames[req.params.id].name)
-    // let result = "not found";
     const urlId = parseInt(req.params.id)
-
-    // arrNames.forEach((obj, index) => {
-    //     if(obj.id === urlId){
-    //         result = arrNames[index].name
-    //     }
-    // })
-
     let result = arrNames.find(el => el.id === urlId).name
 
-    if(!result){
-        result = "Not found"
-    } else {
-        result = result.name
-    }
+    result = result ? result.name : "Not found"
+
+    res.send(result)
+})
+
+app.get('/api/coworkings', (req, res) => {
+    let result = `Il y a ${mockCoworkings.length} coworkings dans la liste.`
+
+    
+    res.send(result)
+})
+
+app.get('/api/coworkings/:id', (req, res) => {
+    const urlId = parseInt(req.params.id)
+    let result = mockCoworkings.find(el => el.id === urlId)
+
+    result = result ? result : `Aucun élément ne correspond à l'id n°${urlId}`
 
     res.send(result)
 })
