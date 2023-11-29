@@ -58,6 +58,8 @@ app.get('/names/:id', (req, res) => {
 
     if(!result){
         result = "Not found"
+    } else {
+        result = result.name
     }
 
     res.send(result)
