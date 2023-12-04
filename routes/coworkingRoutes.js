@@ -1,63 +1,73 @@
 const express = require('express')
 let mockCoworkings = require('../mock-coworking')
+const { Op } = require ('sequelize')
 const router = express.Router()
 const { Coworking } = require('../db/sequelizeSetup')
 
 router
     .route('/')
     .get((req, res) => {
-        res.json(mockCoworkings)
-    })
-    .post((req, res) => { 
-        Coworking.create({
-            name: "Oasis Coworking",
-            price: { "hour": 4, "day": 21, "month": 100 },
-            address: { "number": "68bis", "street": "avenue Jean Jaurès", "postCode": 33150, "city": "Cenon" },
-            superficy: 200,
-            capacity: 27,
+        Coworking.findAll({where: 
+            {name: {
+                [Op.substring]: req.query.search,
+            }}})
+        .then((coworking) => {
+            res.json({data: coworking})
         })
-    
-        const result = {message: 'Le coworking a bien été ajouté'}
-        res.json(result)
+        .catch((error) => {
+            res.json({ message: `Aucun coworking trouvé`, data: error.message})
+            console.log(error)
+        })        
+    })
+    .post((req, res) => {
+        const newCoworking = { ...req.body }
+
+        Coworking.create(newCoworking)
+        .then((coworking) => {
+            res.json({ message: 'Le coworking a bien été créé', data: coworking})
+            console.log(coworking)
+        })
+        .catch((error) => {
+            res.json({ message: `Le coworking n'a pas pu être créé`, data: error.message})
+            console.log(error)
+        })
     })
 
 router
     .route('/:id')
     .get((req, res) => {
-        const urlId = parseInt(req.params.id)
-        let result = mockCoworkings.find(el => el.id === urlId)
-    
-        result = result ? result : `Aucun élément ne correspond à l'id n°${urlId}`
-    
-        res.json(result)
+        Coworking.findByPk(parseInt(req.params.id))
+        .then((coworking) => {
+            res.json({data: coworking})
+        })
+        .catch((error) => {
+            res.json({ message: `Aucun coworking trouvé`, data: error.message})
+            console.log(error)
+        })
+
     })
     .put((req, res) => {
-        const coworking = mockCoworkings.find(el => el.id === parseInt(req.params.id))
-    
-        let result
-        if (coworking){
-            const newCoworking = {...coworking, ...req.body}
-            const index = mockCoworkings.findIndex(el => el.id === parseInt(req.params.id))
-            mockCoworkings[index] = newCoworking
-            result = {message: `Coworking modifié avec succès`, data : newCoworking}
-        } else {
-            result = {message: `Le coworking n'existe pas`, data : {}}
-        }
+        Coworking.update(req.body, {where: {id: req.params.id}})
+        .then((result) => {
+            if (result > 0) {
+                res.json({ message: 'Le coworking a bien été mis à jour.', data: result })
+            } else {
+                res.json({ message: `Aucun coworking n'a été mis à jour.` })
+            }
+        })
+        .catch((error) => {
+            res.json({message: 'Une erreur est survenue lors de la mise à jour du coworking', data: error.message})
+        })
         
-        res.json(result)
     })
     .delete((req, res) => {
-        let coworking = mockCoworkings.find((el) => el.id === parseInt(req.params.id))   
-    
-        let result
-        if (coworking){
-            mockCoworkings = mockCoworkings.filter(el => el.id !== coworking.id)
-            result = {message: 'Coworking supprimé avec succès', data: coworking }
-        } else {
-            result = {message: `Le coworking n'existe pas`}
-        }
-    
-        res.json(result)
+        Coworking.destroy({where: {id: req.params.id }})
+        .then((result) => {
+            res.json({message: `Le coworking a bien été supprimé`, data: result})
+        })
+        .catch((error) => {
+            res.json({message: `La supression a échoué`})
+        })
     })
 
 module.exports = router
