@@ -1,6 +1,4 @@
 const express = require("express");
-let mockCoworkings = require("../mock-coworking");
-const { Op } = require("sequelize");
 const router = express.Router();
 const {
   findAllCoworkings,

@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        msh: "Le nom est déjà pris",
+        msg: "Le nom est déjà pris",
       },
       validate: {
         notEmpty: {
