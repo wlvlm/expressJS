@@ -13,7 +13,9 @@ const findAllCoworkings = (req, res) => {
       res.json({ data: coworking });
     })
     .catch((error) => {
-      res.json({ message: `Aucun coworking trouvé`, data: error.message });
+      res
+        .status(500)
+        .json({ message: `Aucun coworking trouvé`, data: error.message });
       console.log(error);
     });
 };
@@ -24,7 +26,9 @@ const findCoworkingByPk = (req, res) => {
       res.json({ data: coworking });
     })
     .catch((error) => {
-      res.json({ message: `Aucun coworking trouvé`, data: error.message });
+      res
+        .status(500)
+        .json({ message: `Aucun coworking trouvé`, data: error.message });
       console.log(error);
     });
 };
@@ -37,7 +41,7 @@ const createCoworking = (req, res) => {
       console.log(coworking);
     })
     .catch((error) => {
-      res.json({
+      res.status(500).json({
         message: `Le coworking n'a pas pu être créé`,
         data: error.message,
       });
@@ -57,18 +61,20 @@ const updateCoworking = (req, res) => {
             });
           })
           .catch((error) => {
-            res.json({
-              message: `Aucun coworking trouvé`,
+            res.status(500).json({
+              message: `La mise à jour a écoué.`,
               data: error.message,
             });
           });
       } else {
-        res.json({ message: `Aucun coworking n'a été mis à jour.` });
+        res
+          .status(400)
+          .json({ message: `Aucun coworking n'a été mis à jour.` });
       }
     })
     .catch((error) => {
       res.json({
-        message: "Une erreur est survenue lors de la mise à jour du coworking",
+        message: "Une erreur est survenue lors de la mise à jour du coworking.",
         data: error.message,
       });
     });
@@ -87,17 +93,19 @@ const deleteCoworking = (req, res) => {
             });
           })
           .catch((error) => {
-            res.json({
+            res.status(500).json({
               mesage: `La suppression a échoué.`,
               data: error.message,
             });
           });
       } else {
-        res.json({ mesage: `Aucun coworking trouvé.` });
+        res.status(400).json({ mesage: `Aucun coworking trouvé.` });
       }
     })
     .catch((error) => {
-      res.json({ mesage: `La requête n'a pas aboutie.`, data: error.message });
+      res
+        .status(500)
+        .json({ mesage: `La requête n'a pas aboutie.`, data: error.message });
     });
 };
 

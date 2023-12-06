@@ -20,7 +20,11 @@ sequelize
   .then(() => {
     mockCoworking.forEach((element) => {
       const newCoworking = { ...element };
-      Coworking.create(newCoworking);
+      Coworking.create(newCoworking)
+        .then(() => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
     });
   })
   .catch((error) => {});
