@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         msg: "Le mail est déjà pris",
       },
       validate: {
+        isEmail: {
+          msg: "Le mail doit être valide",
+        },
         notEmpty: {
           msg: "Le mail ne peut pas être vide",
         },

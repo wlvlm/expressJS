@@ -3,6 +3,8 @@ const CoworkingModel = require("../models/coworking");
 const UserModel = require("../models/user");
 const { Sequelize, DataTypes } = require("sequelize");
 const mockCoworking = require("../mock-coworking");
+const mockUser = require("../mock-user");
+const bcrypt = require("bcrypt");
 
 // B. On créé une instance de bdd qui communique avec Xampp
 const sequelize = new Sequelize("bordeaux_coworkings", "root", "", {
@@ -19,19 +21,29 @@ const User = UserModel(sequelize, DataTypes);
 sequelize
   .sync({ force: true })
   .then(() => {
-    mockCoworking.forEach((element) => {
-      const newCoworking = { ...element };
+    mockCoworking.forEach((cowork) => {
+      const newCoworking = { ...cowork };
       Coworking.create(newCoworking)
         .then(() => {})
         .catch((error) => {
           console.log(error.message);
         });
     });
-    User.create({ email: "test@test.com", password: "Abc12!" })
-      .then(() => {})
-      .catch((error) => {
-        console.log(error.message);
-      });
+    mockUser.forEach((user) => {
+      bcrypt
+        .hash(user.password, 10)
+        .then((hash) => {
+          User.create({ ...user, password: hash })
+            .then(() => {})
+            .catch((error) => {
+              console.log(error.message);
+            });
+        })
+        .then(() => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
+    });
   })
   .catch((error) => {
     console.log(error.message);

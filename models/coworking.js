@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         len: {
           msg: "Le nom doit avoir un nombre de caractères compris entre 2 et 50.",
-          args: [5, 50],
+          args: [2, 50],
         },
       },
     },

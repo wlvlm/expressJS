@@ -34,6 +34,7 @@ const findCoworkingByPk = (req, res) => {
 };
 
 const createCoworking = (req, res) => {
+  console.log(req.headers.authorization);
   const newCoworking = { ...req.body };
   Coworking.create(newCoworking)
     .then((coworking) => {
