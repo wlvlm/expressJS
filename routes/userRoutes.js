@@ -1,5 +1,4 @@
 const express = require("express");
-const { Op } = require("sequelize");
 const router = express.Router();
 const {
   findAllUsers,
@@ -8,16 +7,12 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userControllers");
+const { login, protect } = require("../controllers/authController.js");
 
-router
-  .route("/")
-  .get(findAllUsers)
-  .post(createUser);
+router.route("/").get(findAllUsers).post(createUser);
 
-router
-  .route("/:id")
-  .get(findUserByPk)
-  .put(updateUser)
-  .delete(deleteUser);
+router.route("/login").post(login);
+
+router.route("/:id").get(findUserByPk).put(updateUser).delete(deleteUser);
 
 module.exports = router;

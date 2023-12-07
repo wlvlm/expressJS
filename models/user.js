@@ -24,11 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Le mot de passe doit être rempli",
-        },
-        not: {
-          msg: "Le mot de passe doit avoir une majuscule, une minuscule, un nombre, un caractère spécial et au moins 5 caractères",
-          args: "/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{5,}$/gm",
+          msg: "Le mot de passe ne peut être vide",
         },
       },
     },

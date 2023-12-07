@@ -1,14 +1,8 @@
 const { Coworking } = require("../db/sequelizeSetup");
-const { Op } = require("sequelize");
+const { UniqueConstraintError, ValidationError } = require("sequelize");
 
 const findAllCoworkings = (req, res) => {
-  Coworking.findAll({
-    where: {
-      name: {
-        [Op.substring]: req.query.search,
-      },
-    },
-  })
+  Coworking.findAll()
     .then((coworking) => {
       res.json({ data: coworking });
     })
@@ -34,19 +28,25 @@ const findCoworkingByPk = (req, res) => {
 };
 
 const createCoworking = (req, res) => {
-  console.log(req.headers.authorization);
   const newCoworking = { ...req.body };
+
   Coworking.create(newCoworking)
     .then((coworking) => {
-      res.json({ message: "Le coworking a bien été créé", data: coworking });
-      console.log(coworking);
+      res
+        .status(201)
+        .json({ message: "Le coworking a bien été créé", data: coworking });
     })
     .catch((error) => {
+      if (
+        error instanceof UniqueConstraintError ||
+        error instanceof ValidationError
+      ) {
+        return res.status(400).json({ message: error.message });
+      }
       res.status(500).json({
         message: `Le coworking n'a pas pu être créé`,
         data: error.message,
       });
-      console.log(error);
     });
 };
 

@@ -1,11 +1,11 @@
 const users = [
   {
     email: "williampgm77@gmail.com",
-    password: "Abc12!",
+    password: "AbCdE12!",
   },
   {
     email: "admin@gmail.com",
-    password: "admin1!",
+    password: "Admin5*",
   },
   {
     email: "test@test.com",

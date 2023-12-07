@@ -29,26 +29,31 @@ const findUserByPk = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    User.create({ ...req.body, password: hash })
-      .then((user) => {
-        res
-          .status(201)
-          .json({ message: `L'utilisateur a bien été créé`, data: user });
-      })
-      .catch((error) => {
-        if (
-          error instanceof UniqueConstraintError ||
-          error instanceof ValidationError
-        ) {
-          return res.status(400).json({ message: error.message });
-        }
-        res.status(500).json({
-          message: `L'utilisateur n'a pas pu être créé`,
-          data: error.message,
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hash) => {
+      User.create({ ...req.body, password: hash })
+        .then((user) => {
+          res
+            .status(201)
+            .json({ message: `L'utilisateur a bien été créé`, data: user });
+        })
+        .catch((error) => {
+          if (
+            error instanceof UniqueConstraintError ||
+            error instanceof ValidationError
+          ) {
+            return res.status(400).json({ message: error.message });
+          }
+          res.status(500).json({
+            message: `L'utilisateur n'a pas pu être créé`,
+            data: error.message,
+          });
         });
-      });
-  });
+    })
+    .catch((error) => {
+      res.json({ message: error.message });
+    });
 };
 
 const updateUser = (req, res) => {
