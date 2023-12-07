@@ -14,6 +14,12 @@ const Coworking = CoworkingModel(sequelize, DataTypes);
 const User = UserModel(sequelize, DataTypes);
 const Role = RoleModel(sequelize, DataTypes);
 
+Role.hasMany(User);
+User.belongsTo(Role);
+
+User.hasMany(Coworking);
+Coworking.belongsTo(User);
+
 sequelize
   .sync({ force: true })
   .then(() => {
@@ -34,4 +40,4 @@ sequelize
     console.error(`Impossible de se connecter à la base de données ${error}`)
   );
 
-module.exports = { sequelize, Coworking, User };
+module.exports = { sequelize, Coworking, User, Role };

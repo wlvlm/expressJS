@@ -1,4 +1,4 @@
-const { User } = require("../db/sequelizeSetup");
+const { User, Role } = require("../db/sequelizeSetup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secret_key = require("../configs/tokenData");
@@ -43,7 +43,7 @@ const protect = (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, secret_key);
-      console.log(decoded);
+      req.email = decoded.data;
       next();
     } catch (error) {
       return res.status(403).json({ message: `Le jeton n'est pas valide.` });
@@ -51,7 +51,28 @@ const protect = (req, res, next) => {
   }
 };
 
+const restrict = (req, res, next) => {
+  User.findOne({ where: { email: req.email } })
+    .then((user) => {
+      Role.findByPk(user.RoleId)
+        .then((role) => {
+          if (role.label === "admin") {
+            next();
+          } else {
+            res.status(403).json({ message: "Droits insuffisants" });
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+};
+
 module.exports = {
   login,
   protect,
+  restrict,
 };

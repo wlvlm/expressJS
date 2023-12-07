@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../controllers/authController");
+const { protect, restrict } = require("../controllers/authController");
 const {
   findAllCoworkings,
   findCoworkingByPk,
@@ -9,12 +9,15 @@ const {
   deleteCoworking,
 } = require("../controllers/coworkingControllers");
 
-router.route("/").get(findAllCoworkings).post(protect, createCoworking);
+router
+  .route("/")
+  .get(findAllCoworkings)
+  .post(protect, restrict, createCoworking);
 
 router
   .route("/:id")
   .get(findCoworkingByPk)
-  .put(protect, updateCoworking)
-  .delete(protect, deleteCoworking);
+  .put(protect, restrict, updateCoworking)
+  .delete(protect, restrict, deleteCoworking);
 
 module.exports = router;

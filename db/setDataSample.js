@@ -1,5 +1,5 @@
-const mockCoworkings = require("../mock-coworking");
-const mockUsers = require("../mock-user");
+const mockCoworkings = require("./mock-coworking");
+const mockUsers = require("./mock-user");
 const bcrypt = require("bcrypt");
 
 const setCoworkings = (Coworking) => {
